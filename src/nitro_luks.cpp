@@ -7,11 +7,16 @@
 #include <unistd.h>
 #include <libnitrokey/NK_C_API.h>
 
+// return status codes
+#define ERROR 1
+#define PASSWORD_OK 0
+
+// libnitrokey status codes
 #define STATUS_OK 0
 #define WRONG_PASSWORD 4
 
+// parameters
 #define SLOT_COUNT 16
-#define ERROR 1
 #define MAX_PIN_LENGTH 20
 
 struct termios saved_attributes;
@@ -139,5 +144,9 @@ int main(int argc, char const *argv[])
     // print password to stdout
     fprintf(stdout, "%s", LUKS_password);
 
-    return 0;
+    // Close the device and disconnect
+    NK_lock_device();
+    NK_logout();
+
+    return PASSWORD_OK;
 }
