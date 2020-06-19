@@ -33,33 +33,33 @@ int error(char const *msg)
 
 void disable_echo(void)
 {
-  struct termios tattr;
-  tcgetattr(STDIN_FILENO, &saved_attributes);
+    struct termios tattr;
+    tcgetattr(STDIN_FILENO, &saved_attributes);
 
-  tcgetattr (STDIN_FILENO, &tattr);
-  tattr.c_lflag &= ~(ICANON | ECHO);
-  tcsetattr (STDIN_FILENO, TCSAFLUSH, &tattr);
+    tcgetattr (STDIN_FILENO, &tattr);
+    tattr.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr (STDIN_FILENO, TCSAFLUSH, &tattr);
 }
 
 void reset_input_mode(void)
 {
-  tcsetattr(STDIN_FILENO, TCSANOW, &saved_attributes);
+    tcsetattr(STDIN_FILENO, TCSANOW, &saved_attributes);
 }
 
 int main(int argc, char const *argv[])
 {
     // Disable debug messages
     NK_set_debug(false);
-    
+
     // Check for nitrokey
     int login_status = !NITROKEY_FOUND;
     for (int retry = 0; retry < NITROKEY_MAX_RETRY_COUNT; ++retry) {
         login_status = NK_login_auto();
         if (login_status == NITROKEY_FOUND) {
-        const char* serial = NK_device_serial_number();
-        fprintf(stderr, "*** Nitrokey : %s found!\n", serial);
+            const char* serial = NK_device_serial_number();
+            fprintf(stderr, "*** Nitrokey : %s found!\n", serial);
             break;
-    }
+        }
         usleep(NITROKEY_WAIT_RETRY_INTERVAL_MS*1000);
     }
     if (login_status != NITROKEY_FOUND) {
@@ -74,15 +74,15 @@ int main(int argc, char const *argv[])
 
     // Read password from stdin and remove the trailing newline
     char password[MAX_PIN_LENGTH + 1] = {'\0'};
-        disable_echo();
-        fgets(password, sizeof(password), stdin);
-        reset_input_mode();
-        password[strcspn(password, "\n")] = 0;
+    disable_echo();
+    fgets(password, sizeof(password), stdin);
+    reset_input_mode();
+    password[strcspn(password, "\n")] = 0;
 
     // Check password length
     if (strlen(password) == 0) {
         return error("*** Empty password, falling back to LUKS passphrase");
-        }
+    }
 
     // Unlock password safe
     int password_safe_status = NK_enable_password_safe(password);
@@ -91,35 +91,31 @@ int main(int argc, char const *argv[])
         return RETRY_PASSWORD;
     }
 
+    // Find LUKS password
+    int empty_slots = 0;
+    uint8_t slot_number = 255;
     fprintf(stderr, "*** Scanning the nitrokey slots...\n");
-    slots = NK_get_password_safe_slot_status();
-    for (uint8_t slot = 0; slot < SLOT_COUNT; ++slot) 
-    {
-        if (slots[slot] == 1)
-        {
+    uint8_t *slots = NK_get_password_safe_slot_status();
+    for (uint8_t slot = 0; slot < SLOT_COUNT; ++slot) {
+        if (slots[slot] == 1) {
             const char* slotname = NK_get_password_safe_slot_name(slot);
-            if(strcmp(slotname, "LUKS") == 0)
+            if(strcmp(slotname, "LUKS") == 0) {
                 slot_number = slot;
-        } 
-        else 
-        {
+            }
+        } else {
             empty_slots++;
         }
     }
 
-    if (empty_slots == SLOT_COUNT)
-    {
-        return error("*** No slots enabled.\n");
-    } 
-    else if(slot_number == 255) 
-    {
-        return error("*** No slot configured by name LUKS.\n");
+    if (empty_slots == SLOT_COUNT) {
+        return error("*** No slots enabled.");
+    }
+    if(slot_number == 255) {
+        return error("*** No slot configured by name LUKS.");
     }
 
-    // At this point we found a valid slot, go ahead and fetch the password.
-    LUKS_password = NK_get_password_safe_slot_password(slot_number);
-    
-    // print password to stdout
+    // Read the LUKS password and print it to stdout
+    const char* LUKS_password = NK_get_password_safe_slot_password(slot_number);
     fprintf(stdout, "%s", LUKS_password);
 
     // Close the device and disconnect
