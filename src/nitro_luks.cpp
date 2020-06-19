@@ -9,6 +9,7 @@
 
 // return status codes
 #define ERROR 1
+#define RETRY_PASSWORD 2
 #define PASSWORD_OK 0
 
 // libnitrokey status codes
@@ -78,20 +79,17 @@ int main(int argc, char const *argv[])
         reset_input_mode();
         password[strcspn(password, "\n")] = 0;
 
-        // handle the login results
-        if(auth_status == WRONG_PASSWORD) {
-            fprintf(stderr, "*** Wrong PIN!\n");
-        }else if (auth_status == STATUS_OK) {
-            fprintf(stderr, "*** PIN entry successful.\n");
-        }else {
-            return error("*** Error in PIN entry.\n");
+    // Check password length
+    if (strlen(password) == 0) {
+        return error("*** Empty password, falling back to LUKS passphrase");
         }
-    } while(auth_status == WRONG_PASSWORD);
 
-    //  Find a slot from the nitrokey where we fetch the LUKS key from.
-    password_safe_status = NK_enable_password_safe(password);
-    if (password_safe_status != STATUS_OK)
-        return error("*** Error while accessing password safe.\n");
+    // Unlock password safe
+    int password_safe_status = NK_enable_password_safe(password);
+    if (password_safe_status != STATUS_OK) {
+        fprintf(stderr, "*** Error while accessing password safe.\n");
+        return RETRY_PASSWORD;
+    }
 
     fprintf(stderr, "*** Scanning the nitrokey slots...\n");
     slots = NK_get_password_safe_slot_status();
