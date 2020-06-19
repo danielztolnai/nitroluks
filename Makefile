@@ -8,14 +8,8 @@ clean:
 	rm -rf build/
 	rm -rf DEBUILD/
 
-binary: init buildlib
+binary: init
 	g++ src/nitro_luks.c -o build/nitro_luks -Lbuild/ -l:libnitrokey.so.3 -Wall
-
-buildlib:
-	cp -r src/libnitrokey build
-	mkdir -p build/libnitrokey/build
-	(cd build/libnitrokey/build; cmake ..; make -j2)
-	cp build/libnitrokey/build/libnitrokey.so.3 build/
 
 debianize: init
 	rm -fr DEBUILD
@@ -26,7 +20,6 @@ debianize: init
 
 install: binary
 	install -D -m 0755 build/nitro_luks $(DESTDIR)/usr/bin/nitro_luks
-	install -D -m 0755 build/libnitrokey.so.3 $(DESTDIR)/usr/lib/libnitrokey.so.3
 	install -D -m 0755 keyscript.sh $(DESTDIR)/usr/bin/keyscript.sh
 	install -D -m 0755 nitroluks_crypttab $(DESTDIR)/etc/nitroluks/nitroluks_crypttab.conf
 	install -D -m 0755 initramfs-hook $(DESTDIR)/etc/initramfs-tools/hooks/nitroluks
