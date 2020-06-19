@@ -1,5 +1,5 @@
 SRC_DIR = nitroluks.orig
-VERSION = 0.1
+VERSION = 0.2
 
 init:
 	mkdir -p build

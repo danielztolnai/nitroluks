@@ -1,3 +1,10 @@
+nitroluks (0.2-1) UNRELEASED; urgency=medium
+
+  * Add support for custom Nitrokey slot names
+  * Implement better fallback to LUKS password prompt
+
+ -- Dániel Tolnai <danielz.tolnai@gmail.com>  Fri, 19 Jun 2020 20:19:57 +0200
+
 nitroluks (0.1-1) unstable; urgency=medium
 
   * Initial release
