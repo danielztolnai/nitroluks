@@ -9,7 +9,7 @@ clean:
 	rm -rf DEBUILD/
 
 binary: init
-	g++ src/nitro_luks.cpp -o build/nitro_luks -l:libnitrokey.so.3 -Wall
+	g++ -std=c++11 src/nitro_luks.cpp -o build/nitro_luks -l:libnitrokey.so.3 -Wall -Wextra -pedantic
 
 debianize: init
 	rm -fr DEBUILD
