@@ -73,7 +73,6 @@ public:
     ~Nitrokey() {
         this->lock();
         this->logout();
-        std::cerr << "[INFO] Nitrokey locked" << std::endl;
     }
 
     bool is_present() { return this->present; }
@@ -98,7 +97,7 @@ public:
             }
         }
 
-        std::cerr << "[INFO] Slot named '" << slot_name << "' not found" << std::endl;
+        std::cerr << "[INFO] Slot not found" << std::endl;
         return "";
     }
 };
