@@ -13,11 +13,14 @@
 
 // libnitrokey status codes
 #define STATUS_OK 0
-#define WRONG_PASSWORD 4
+#define NITROKEY_FOUND 1
 
 // parameters
 #define SLOT_COUNT 16
 #define MAX_PIN_LENGTH 20
+#define NITROKEY_WAIT_TIMEOUT_MS 5000
+#define NITROKEY_WAIT_RETRY_INTERVAL_MS 250
+#define NITROKEY_MAX_RETRY_COUNT (NITROKEY_WAIT_TIMEOUT_MS / NITROKEY_WAIT_RETRY_INTERVAL_MS)
 
 struct termios saved_attributes;
 
@@ -37,36 +40,29 @@ void disable_echo(void)
   tcsetattr (STDIN_FILENO, TCSAFLUSH, &tattr);
 }
 
-void reset_input_mode (void)
+void reset_input_mode(void)
 {
   tcsetattr(STDIN_FILENO, TCSANOW, &saved_attributes);
 }
 
 int main(int argc, char const *argv[])
 {
-    const char* LUKS_password;
-    char password[MAX_PIN_LENGTH + 1];
-    uint8_t* slots;
-    int login_status;
-    int auth_status;
-    int password_safe_status;
-    int empty_slots = 0;
-    uint8_t slot_number = 255;
-    uint8_t retry_count;
-    char ask[2];
-
     // Disable debug messages
     NK_set_debug(false);
-    login_status  = NK_login_auto();
     
-    if (login_status != 1) 
-    {
-        return error("*** No nitrokey detected.\n");
-    } 
-    else 
-    {
+    // Check for nitrokey
+    int login_status = !NITROKEY_FOUND;
+    for (int retry = 0; retry < NITROKEY_MAX_RETRY_COUNT; ++retry) {
+        login_status = NK_login_auto();
+        if (login_status == NITROKEY_FOUND) {
         const char* serial = NK_device_serial_number();
         fprintf(stderr, "*** Nitrokey : %s found!\n", serial);
+            break;
+    }
+        usleep(NITROKEY_WAIT_RETRY_INTERVAL_MS*1000);
+    }
+    if (login_status != NITROKEY_FOUND) {
+        return error("*** No nitrokey detected.");
     }
     
     do
