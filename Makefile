@@ -20,6 +20,6 @@ debianize: init
 
 install: binary
 	install -D -m 0755 build/nitro_luks $(DESTDIR)/usr/bin/nitro_luks
-	install -D -m 0755 keyscript.sh $(DESTDIR)/usr/bin/keyscript.sh
-	install -D -m 0755 nitroluks_crypttab $(DESTDIR)/etc/nitroluks/nitroluks_crypttab.conf
+	install -D -m 0755 keyscript.sh $(DESTDIR)/usr/bin/nitroluks-keyscript
+	install -D -m 0644 nitroluks_crypttab $(DESTDIR)/etc/nitroluks/nitroluks_crypttab.conf
 	install -D -m 0755 initramfs-hook $(DESTDIR)/etc/initramfs-tools/hooks/nitroluks

@@ -2,7 +2,7 @@
 
 Unlock LUKS disk by Nitrokey on boot using the password vault which is built in Nitrokey Pro and Nitrokey Storage.
 
-Support for Nitrokey Start is coming shortly. It works by adding support for keyfiles, i.e., the LUKS password would be stored in an encrypted file within the initramfs which is decrypted during the boot by Nitrokey. 
+Support for Nitrokey Start is coming shortly. It works by adding support for keyfiles, i.e., the LUKS password would be stored in an encrypted file within the initramfs which is decrypted during the boot by Nitrokey.
 
 This method will of course work with Nitrokey Pro and Nitrokey Storage also.
 
@@ -14,7 +14,7 @@ __YOU CAN MAKE YOUR DEBIAN UNBOOTABLE IF YOU MESS UP THE crypttab or initramfs S
 
 Please take backups of any important files and make sure that you have backup initramfs which you can use as a fallback if the installation messes your boot up for some reason.
 
-This package could potentially work with Ubuntu also, but I have not tested it. 
+This package could potentially work with Ubuntu also, but I have not tested it.
 
 Moreover, the directory structure is not compliant with Debian project guidelines. I will be improving the package structure, code quality and make sure that this also works with Ubuntu shortly so stay tuned.
 
@@ -41,7 +41,7 @@ __Note that IT IS IMPORTANT THAT THE SLOT NAME IN THE NITROKEY IS__ `LUKS` __OTH
 
 * This package has dependency to `libhidapi-libusb0` which can be installed by running `apt install libhidapi-libusb0`
 
-* After these steps, edit your `/etc/crypttab` file and add `keyscript=/usr/bin/keyscript.sh` to your luks entry. Please consult the [crypttab manual](https://linux.die.net/man/5/crypttab) for more information.
+* After these steps, edit your `/etc/crypttab` file and add `keyscript=/usr/bin/nitroluks-keyscript` to your luks entry. Please consult the [crypttab manual](https://linux.die.net/man/5/crypttab) for more information.
 
 * See nitroluks_crypttab as an example how the crypttab file should look.
 
