@@ -24,7 +24,13 @@ int main(int argc, char const *argv[])
     // Parse arguments
     if (2 == argc) {
         std::string arg{argv[1]};
-        slot_name = arg;
+        if ("-d" == arg) {
+            // Detection only
+            return nitrokey.is_present() ? RET_OK : RET_ERROR;
+        } else {
+            // Use argument as slot name
+            slot_name = arg;
+        }
     }
 
     // Read password from stdin and remove the trailing newline
