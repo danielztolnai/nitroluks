@@ -15,6 +15,6 @@ if /bin/nitro_luks -d; then
 fi
 
 # In case reading from Nitrokey fails, fall back to a LUKS password prompt
-if [ $exit_status -eq 1 ]; then
+if [ $exit_status -ne 0 ]; then
     /lib/cryptsetup/askpass "Please unlock disk ${CRYPTTAB_NAME}: "
 fi
