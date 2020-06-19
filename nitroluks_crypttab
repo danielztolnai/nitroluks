@@ -1,5 +1,6 @@
 # This is an example crypttab file for nitrolux
 # Simply add the 'keyscript=/usr/bin/nitroluks-keyscript' to your luks entry and you are good to go
+# If your Nitrokey slot name is not 'LUKS', pass the slot name as the third parameter (keyfile)
 # Below is an example how the entry might look
 
-<device>_crypt UUID=<DISK-UUID> none luks keyscript=/usr/bin/nitroluks-keyscript
+<device> UUID=<DISK-UUID> <SLOT-NAME> luks keyscript=/usr/bin/nitroluks-keyscript

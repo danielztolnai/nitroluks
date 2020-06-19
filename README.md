@@ -23,25 +23,22 @@ Moreover, the directory structure is not compliant with Debian project guideline
 Before the installation, you must do some preparation steps.
 
 ### Preparation
-* First, add a new password to your Nitrokey, the easiest way is to use `nitro-app`. Go to password safe and add a new slot, name the slot as `LUKS` and generate the password for the slot and save it.
+* First, add a new password to your Nitrokey, the easiest way is to use `nitro-app`. Go to password safe and add a new slot. Generate a password for the slot and save it. Remember the name of the slot, you will need it later.
 
-* Next, add the same password to your LUKS disk, i.e. `# cryptsetup luksAddKey /dev/<device> ` and make sure you use the same key as you stored into your Nitrokeys LUKS slot.
-
-__Note that IT IS IMPORTANT THAT THE SLOT NAME IN THE NITROKEY IS__ `LUKS` __OTHERWISE YOU CAN NOT UNLOCK YOUR DISK BY NITROKEY!__
-
+* Next, add the same password to your LUKS disk, i.e. `# cryptsetup luksAddKey /dev/<device> ` and make sure you use the same key as you stored into your Nitrokeys slot.
 
 ### Install
 * Make sure you have `devscripts`, `libhidapi-dev` and `libnitrokey-dev` installed.
 
 * Clone this repo and run `make debianize`.
 
-* After this step, you will find `nitroluks_0.1-1_arch.deb` the package under `DEBUILD` directory.
+* After this step, you will find `nitroluks_0.x-y_arch.deb` the package under `DEBUILD` directory.
 
-* Install it by running `dpkg -i nitroluks_0.1-1_arch.deb`
+* Install it by running `dpkg -i nitroluks_0.x-y_arch.deb`
 
 * This package has dependency to `libhidapi-libusb0` which can be installed by running `apt install libhidapi-libusb0`
 
-* After these steps, edit your `/etc/crypttab` file and add `keyscript=/usr/bin/nitroluks-keyscript` to your luks entry. Please consult the [crypttab manual](https://linux.die.net/man/5/crypttab) for more information.
+* After these steps, edit your `/etc/crypttab` file and add `keyscript=/usr/bin/nitroluks-keyscript` to your luks entry. Please consult the [crypttab manual](https://linux.die.net/man/5/crypttab) for more information. Pass the Nitrokey slot name as the keyfile parameter.
 
 * See nitroluks_crypttab as an example how the crypttab file should look.
 
@@ -51,6 +48,4 @@ __Note that IT IS IMPORTANT THAT THE SLOT NAME IN THE NITROKEY IS__ `LUKS` __OTH
 
 * If the Nitrokey is not connected during the boot, the PIN is locked, or something else blocks you for using the Nitrokey, you will get the default LUKS password prompt which you can use to unlock the disk.
 
-* If you have multiple slots named as `LUKS` in your Nitrokey, the first one will be used.
-
-* This repo also contains a copy of `libnitrokey` which can be found [here.](https://github.com/Nitrokey/libnitrokey)
+* If you have multiple slots with the same name in your Nitrokey, the first one with the given name will be used.
