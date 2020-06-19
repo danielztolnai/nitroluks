@@ -15,7 +15,7 @@ exit_status=$?
 
 # in case nitroluks fails, fall back to the default LUKS password prompt
 if [ $exit_status -eq 1 ]; then
-    /lib/cryptsetup/askpass "Unlocking the disk $CRYPTTAB_SOURCE ($CRYPTTAB_NAME)\nEnter passphrase: "
+    /lib/cryptsetup/askpass "Please unlock disk ${CRYPTTAB_NAME}: "
 else
     echo "*** LUKS setup successful by nitrokey" >&2
 fi
