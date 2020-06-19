@@ -21,6 +21,12 @@ int main(int argc, char const *argv[])
     Nitrokey nitrokey{};
     std::string slot_name{"LUKS"};
 
+    // Parse arguments
+    if (2 == argc) {
+        std::string arg{argv[1]};
+        slot_name = arg;
+    }
+
     // Read password from stdin and remove the trailing newline
     auto password = read_password();
 
