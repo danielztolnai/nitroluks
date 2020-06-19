@@ -1,13 +1,15 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: nitroluks
-Source: https://github.com/artosan/nitroluks
+Source: https://github.com/danielztolnai/nitroluks
 
 Files: *
 Copyright: 2017 Arto Sänkiaho artosank@gmail.com
+           2020 Dániel Tolnai
 License: GPL-2+
 
 Files: debian/*
 Copyright: 2017 Arto Sänkiaho <artosank@gmail.com>
+           2020 Dániel Tolnai
 License: GPL-2+
 
 License: GPL-2+

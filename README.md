@@ -1,10 +1,8 @@
 # Nitroluks
 
+This is a fork of https://github.com/artosan/nitroluks by Arto Sänkiaho updated to handle custom slot names and therefore multiple machines with different LUKS passwords.
+
 Unlock LUKS disk by Nitrokey on boot using the password vault which is built in Nitrokey Pro and Nitrokey Storage.
-
-Support for Nitrokey Start is coming shortly. It works by adding support for keyfiles, i.e., the LUKS password would be stored in an encrypted file within the initramfs which is decrypted during the boot by Nitrokey.
-
-This method will of course work with Nitrokey Pro and Nitrokey Storage also.
 
 ## Warning
 
